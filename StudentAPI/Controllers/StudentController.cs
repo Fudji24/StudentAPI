@@ -15,6 +15,7 @@ using System.Web.Mvc;
 
 namespace StudentAPI.Controllers
 {
+    [System.Web.Http.Authorize]
     public class StudentController : ApiController
     {
         StudentDBContext _context = new StudentDBContext();
@@ -27,7 +28,7 @@ namespace StudentAPI.Controllers
 
         }
 
-       
+        
         public HttpResponseMessage Get(int id)
         {
 

@@ -24,6 +24,7 @@ namespace StudentAPI.Models
         public virtual DbSet<Status> Status { get; set; }
         public virtual DbSet<Student> Student { get; set; }
         public virtual DbSet<StudentKurs> StudentKurs { get; set; }
+        public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -98,6 +99,13 @@ namespace StudentAPI.Models
                     .HasConstraintName("FK_StudentKurs_Student");
             });
 
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.UserName).IsRequired().HasMaxLength(20);
+                entity.Property(e => e.Password).IsRequired().HasMaxLength(50);
+            });
             OnModelCreatingPartial(modelBuilder);
         }
 

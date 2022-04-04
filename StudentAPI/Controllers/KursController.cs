@@ -12,6 +12,7 @@ using System.Web.Http;
 
 namespace StudentAPI.Controllers
 {
+    [System.Web.Http.Authorize]
     public class KursController : ApiController
     {
         StudentDBContext _context = new StudentDBContext();
