@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using StudentAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,12 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Web.Http;
 
 namespace StudentAPI.Controllers
 {
-    [System.Web.Http.Authorize]
+    //[System.Web.Http.Authorize]
     public class KursController : ApiController
     {
         StudentDBContext _context = new StudentDBContext();
@@ -25,9 +27,25 @@ namespace StudentAPI.Controllers
 
         public HttpResponseMessage Get(int id)
         {
-            var kurs = from n in _context.Kurs.Where(k => k.KursId == id) select n;
+            var kursCtx = _context.Kurs.Where(k => k.KursId == id).ToList();
 
-            return Request.CreateResponse(HttpStatusCode.OK, kurs);
+            var list = new List<Tuple<Kurs, List<Student>>>();
+
+            foreach (var kurs in kursCtx)
+            {
+                var studentKurs = _context.StudentKurs.Where(x => x.KursId == kurs.KursId).Select(x => x.StudentId).ToList();
+
+                var studenti = new List<Student>();
+                foreach (var student in studentKurs)
+                {
+                    var stu = _context.Student.Find(student);
+                    studenti.Add(stu);
+                }
+                list.Add(new Tuple<Kurs, List<Student>>(kurs, studenti));
+            }
+
+            
+            return Request.CreateResponse(HttpStatusCode.OK, list);
           
            
         }
@@ -36,10 +54,22 @@ namespace StudentAPI.Controllers
         {
             try
             {
-                _context.Kurs.Add(kurs);
-                _context.SaveChanges();
+                Regex rgx = new Regex("^[A-Za-z ]+$");
+                if (rgx.IsMatch(kurs.KursName))
+                {
+                    _context.Kurs.Add(kurs);
 
-                return "Kurs uspješno dodat!";
+                    _context.SaveChanges();
+
+
+                    return "Kurs uspješno dodat!";
+
+                }
+                else
+                {
+                    return "Dozvoljeno je koristiti samo slova za kreiranje naziva kursa!";
+                }
+
             }
             catch (Exception)
             {

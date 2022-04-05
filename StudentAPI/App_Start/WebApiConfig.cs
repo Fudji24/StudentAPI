@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Net.Http.Headers;
+using Newtonsoft.Json.Serialization;
 
 namespace StudentAPI
 {
@@ -22,8 +23,9 @@ namespace StudentAPI
                 defaults: new { id = RouteParameter.Optional }
             );
 
+            config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new DefaultContractResolver();
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
-            //config.EnableCors(new EnableCorsAttribute("*", "*", "*"));
+            
             
         }
     }

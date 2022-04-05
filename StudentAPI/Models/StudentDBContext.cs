@@ -43,6 +43,8 @@ namespace StudentAPI.Models
                 entity.Property(e => e.KursName)
                     .IsRequired()
                     .HasMaxLength(100);
+
+               
             });
 
             modelBuilder.Entity<Status>(entity =>
@@ -76,6 +78,9 @@ namespace StudentAPI.Models
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasMaxLength(10);
+
+               
+
             });
 
             modelBuilder.Entity<StudentKurs>(entity =>
@@ -98,6 +103,8 @@ namespace StudentAPI.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_StudentKurs_Student");
             });
+
+          
 
             modelBuilder.Entity<User>(entity =>
             {
